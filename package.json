@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "test": "sucrase-node test.ts"
+    "test": "sucrase-node test.ts",
+    "transpile": "tsc",
+    "install": "npm run --silent transpile"
   },
   "repository": "git@github.com:featherbear/presonus-studiolive-api-simple-api.git",
   "author": "Andrew Wong <andrew.j.wong@outlook.com>",
