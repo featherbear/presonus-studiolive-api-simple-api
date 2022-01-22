@@ -15,5 +15,5 @@ jobs:
     - name: Install packages
       run: yarn install --no-scripts
     
-    - name: Lint and Build
-      run: yarn build
+    - name: Build
+      run: yarn transpile
