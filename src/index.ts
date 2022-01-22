@@ -91,7 +91,7 @@ export class Client extends EventEmitter {
     }
 
     connect(...args: Parameters<StudioLiveAPI['connect']>) {
-        return this.#client.connect(...args)
+        return this.#client.connect(...args).then(() => this)
     }
 
     setLevel(selector: ChannelSelector, levelLinear: number) {
