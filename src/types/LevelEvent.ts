@@ -5,5 +5,9 @@ export default interface LevelEvent extends Event {
     type: 'level'
     channel: ChannelSelector
     levelLinear: number
+
+    /**
+     * @deprecated Currently returning RAW values instead
+     */
     levelLogarithmic: number
 }
