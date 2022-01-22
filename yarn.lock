@@ -108,9 +108,9 @@ pirates@^4.0.1:
   resolved "https://registry.yarnpkg.com/pirates/-/pirates-4.0.4.tgz#07df81e61028e402735cdd49db701e4885b4e6e6"
   integrity sha512-ZIrVPH+A52Dw84R0L3/VS9Op04PuQ2SEoJL6bkshmiTic/HldyW9Tf7oH5mhJZBK7NmDx27vSMrYEXPXclpDKw==
 
-presonus-studiolive-api@featherbear/presonus-studiolive-api#1c3224055d3b702aaedc9f9e8480baf45399d38f:
+presonus-studiolive-api@featherbear/presonus-studiolive-api#000c08b:
   version "1.0.6"
-  resolved "https://codeload.github.com/featherbear/presonus-studiolive-api/tar.gz/1c3224055d3b702aaedc9f9e8480baf45399d38f"
+  resolved "https://codeload.github.com/featherbear/presonus-studiolive-api/tar.gz/000c08bda3832a3917dca8157f09e66c6e51d48b"
   dependencies:
     "@types/node" "^14.14.6"
     queue "^6.0.1"

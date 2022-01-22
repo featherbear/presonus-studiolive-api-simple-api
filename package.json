@@ -9,7 +9,7 @@
   "author": "Andrew Wong <andrew.j.wong@outlook.com>",
   "license": "MIT",
   "dependencies": {
-    "presonus-studiolive-api": "featherbear/presonus-studiolive-api#1c3224055d3b702aaedc9f9e8480baf45399d38f",
+    "presonus-studiolive-api": "featherbear/presonus-studiolive-api#000c08b",
     "typescript": "^4.5.5"
   },
   "devDependencies": {

@@ -1,3 +1,5 @@
+// CURRENTLY ONLY WORKS ON THE MAIN MIX, FOR INPUT DEVICE CHANNELS
+
 import StudioLiveAPI, { ChannelSelector, CHANNELTYPES, MESSAGETYPES } from 'presonus-studiolive-api'
 import EventEmitter from 'events'
 import LevelEvent from './types/LevelEvent'
@@ -83,11 +85,7 @@ export class Client extends EventEmitter {
                     break;
                 }
             }
-
         })
-
-
-        console.log('listen');
     }
 
     connect(...args: Parameters<StudioLiveAPI['connect']>) {
@@ -100,7 +98,6 @@ export class Client extends EventEmitter {
 
     mute(selector: ChannelSelector, status: boolean) {
         return this.#client.setMute(selector, status)
-
     }
 }
 
