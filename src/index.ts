@@ -24,22 +24,6 @@ function settingsPathToChannelSelector(path: string | string[]): ChannelSelector
     }
 
 }
-
-
-/**
- * 
- * @deprecated pls fix in main API
- */
-function lookupFaderPositionKey(key: string) {
-    switch (key) {
-        case 'LINE':
-            return 'values'
-        default:
-            return CHANNELTYPES[key]
-
-    }
-}
-
 export declare interface Client {
     on(event: 'level', listener: CallbackWithData<LevelEvent>): this;
     on(event: 'mute', listener: CallbackWithData<MuteEvent>): this;
@@ -47,10 +31,13 @@ export declare interface Client {
 
 export class Client extends EventEmitter {
     #client: StudioLiveAPI
+    #MS_last: {}
 
     constructor(...args: ConstructorParameters<typeof StudioLiveAPI>) {
         super()
         this.#client = new StudioLiveAPI(...args)
+        this.#MS_last = {}
+
         console.log('ok');
         this.#client.on(MESSAGETYPES.Setting, (d) => {
             let { name, value } = d
@@ -75,7 +62,7 @@ export class Client extends EventEmitter {
                     // if stereo link, only one PV and MS response - have to look at MS for changes?
 
                     this.#client.once(MESSAGETYPES.FaderPosition, (d) => {
-                        let position = d[lookupFaderPositionKey(selector.type)][selector.channel - 1]
+                        let position = d[selector.type][selector.channel - 1]
                         this.emit('level', {
                             channel: selector,
                             levelLinear: position,
