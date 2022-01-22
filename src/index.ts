@@ -1,6 +1,8 @@
 // CURRENTLY ONLY WORKS ON THE MAIN MIX, FOR INPUT DEVICE CHANNELS
 
 import StudioLiveAPI, { ChannelSelector, CHANNELTYPES, MESSAGETYPES } from 'presonus-studiolive-api'
+export type { ChannelSelector } from 'presonus-studiolive-api'
+
 import EventEmitter from 'events'
 import LevelEvent from './types/LevelEvent'
 import MuteEvent from './types/MuteEvent'
