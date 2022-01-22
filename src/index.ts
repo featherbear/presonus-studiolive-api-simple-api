@@ -38,9 +38,36 @@ export class Client extends EventEmitter {
         this.#client = new StudioLiveAPI(...args)
         this.#MS_last = {}
 
-        console.log('ok');
-        this.#client.on(MESSAGETYPES.Setting, (d) => {
-            let { name, value } = d
+        this.#client.on(MESSAGETYPES.FaderPosition, (MS: { [s: string]: number[] }) => {
+            // For each channel type
+            for (let [type, values] of Object.entries(MS)) {
+
+                // For each channel of a given type
+                for (let idx = 0; idx < values.length; idx++) {
+
+                    // Store the new value
+                    let newValue = values[idx]
+
+                    // Check if stored value is different to the new value
+                    if (this.#MS_last?.[type]?.[idx] !== newValue) {
+
+                        this.emit('level', {
+                            channel: {
+                                type: type,
+                                channel: idx + 1 // idx count starts from zero, but channels are one-based
+                            },
+                            level: newValue,
+                            type: 'level'
+                        } as LevelEvent)
+                    }
+                }
+            }
+
+            this.#MS_last = MS;
+        })
+
+        this.#client.on(MESSAGETYPES.Setting, (PV) => {
+            let { name, value } = PV
             name = name.split("/")
             let trailingToken: string = name[name.length - 1]
 
@@ -53,24 +80,6 @@ export class Client extends EventEmitter {
                         status: value,
                         type: 'mute'
                     } as MuteEvent)
-                    break;
-                }
-
-                case 'volume': {
-                    let selector = settingsPathToChannelSelector(name)
-
-                    // if stereo link, only one PV and MS response - have to look at MS for changes?
-
-                    this.#client.once(MESSAGETYPES.FaderPosition, (d) => {
-                        let position = d[selector.type][selector.channel - 1]
-                        this.emit('level', {
-                            channel: selector,
-                            levelLinear: position,
-                            levelLogarithmic: value,
-                            type: 'level'
-                        } as LevelEvent)
-
-                    })
                     break;
                 }
             }
