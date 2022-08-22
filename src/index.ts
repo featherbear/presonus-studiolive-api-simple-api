@@ -1,48 +1,47 @@
-// CURRENTLY ONLY WORKS ON THE MAIN MIX, FOR INPUT DEVICE CHANNELS
-
-import StudioLiveAPI, { ChannelSelector, CHANNELTYPES, MESSAGETYPES } from 'presonus-studiolive-api'
+import StudioLiveAPI, { ChannelSelector, Channel, MessageCode } from 'presonus-studiolive-api'
+import type { ChannelTypes } from 'presonus-studiolive-api'
 export type { ChannelSelector } from 'presonus-studiolive-api'
 
-import EventEmitter from 'events'
 import LevelEvent from './types/LevelEvent'
 import MuteEvent from './types/MuteEvent'
 
 type CallbackWithData<T> = (data: T) => any
+
+const channelLookup = Object.entries(Channel).reduce((obj, [key, val]) => ({ ...obj, [val]: key }), {})
 
 function settingsPathToChannelSelector(path: string | string[]): ChannelSelector {
     if (!Array.isArray(path)) path = path.split("/")
 
     let [type, channel, ...rest] = path
 
-    let reverseLookup = Object.fromEntries(Object.entries(CHANNELTYPES).map(([a, b]) => [b, a]))
-    let TYPE = reverseLookup[type]
-    if (!TYPE) throw new Error("Invalid type: " + type)
+    type = channelLookup[type]
+    if (!type) {
+        console.warn("Could not resolve type lookup for", path)
+        return null
+    }
 
-    let CHANNEL = Math.trunc(Number(channel.slice(2)))
-
-    // `rest` can be used to set the correct type for aux, fx, etc ....
+    channel = /(\d+)$/.exec(channel)[1]
 
     return {
-        type: TYPE as keyof typeof CHANNELTYPES,
-        channel: CHANNEL
+        type: type as ChannelTypes,
+        channel: Number.parseInt(channel)
     }
 
 }
-export declare interface Client {
+export declare interface Client extends StudioLiveAPI {
     on(event: 'level', listener: CallbackWithData<LevelEvent>): this;
     on(event: 'mute', listener: CallbackWithData<MuteEvent>): this;
+    on(event, listener: CallbackWithData<any>): this;
 }
 
-export class Client extends EventEmitter {
-    #client: StudioLiveAPI
+export class Client extends StudioLiveAPI {
     #MS_last: {}
 
     constructor(...args: ConstructorParameters<typeof StudioLiveAPI>) {
-        super()
-        this.#client = new StudioLiveAPI(...args)
+        super(...args)
         this.#MS_last = {}
 
-        this.#client.on(MESSAGETYPES.FaderPosition, (MS: { [s: string]: number[] }) => {
+        this.on(MessageCode.FaderPosition, (MS: { [s: string]: number[] }) => {
             // For each channel type
             for (let [type, values] of Object.entries(MS)) {
 
@@ -70,36 +69,95 @@ export class Client extends EventEmitter {
             this.#MS_last = MS;
         })
 
-        this.#client.on(MESSAGETYPES.Setting, (PV) => {
+        this.on(MessageCode.ParamValue, (PV) => {
             let { name, value } = PV
             name = name.split("/")
             let trailingToken: string = name[name.length - 1]
 
+
             switch (trailingToken) {
                 case 'mute': {
                     let selector = settingsPathToChannelSelector(name)
+                    if (!selector) return
 
                     this.emit('mute', {
                         channel: selector,
                         status: value,
                         type: 'mute'
                     } as MuteEvent)
-                    break;
+                    return;
                 }
             }
+
+            if (trailingToken.startsWith('assign_')) {
+                let selector = settingsPathToChannelSelector(name)
+                if (!selector) return
+
+                let [_, type, channel] = /assign_(\w+)(\d+)$/.exec(trailingToken)
+                selector.mixType = channelLookup[type] ?? type.toUpperCase()
+                selector.mixNumber = Number.parseInt(channel)
+
+                this.emit('mute', {
+                    channel: selector,
+                    status: value,
+                    type: 'mute'
+                } as MuteEvent)
+            }
+
+            if (trailingToken.startsWith('aux')) {
+                if (name.includes('dca')) return
+
+                let selector = settingsPathToChannelSelector(name)
+                if (!selector) return
+
+                let [_, type, channel] = /(\w+)(\d+)$/.exec(trailingToken)
+                selector.mixType = channelLookup[type]
+                selector.mixNumber = Number.parseInt(channel)
+
+                this.emit('level', {
+                    channel: selector,
+                    level: value,
+                    type: 'level'
+                } as LevelEvent)
+            }
+
+            if (trailingToken.startsWith('FX')) {
+                if (name.includes('dca')) return
+
+                let selector = settingsPathToChannelSelector(name)
+                if (!selector) return
+
+                let [_, type, channel] = /(\w+)(\w)$/.exec(trailingToken)
+                selector.mixType = channelLookup[type] ?? type.toUpperCase()
+                selector.mixNumber = channel.charCodeAt(0) - 0x40
+
+                this.emit('level', {
+                    channel: selector,
+                    level: value,
+                    type: 'level'
+                } as LevelEvent)
+            }
+
         })
     }
 
     connect(...args: Parameters<StudioLiveAPI['connect']>) {
-        return this.#client.connect(...args).then(() => this)
-    }
+        return super.connect(...args).then(() => {
+            // Slightly nudge a fader in order to receive the MS packet
+            let volume: number = this.state.get('fxbus.ch1.volume')
+            if (volume === null) throw new Error("Unexpected mixer state during setup")
+            let newVolume = volume + 0.01 * (volume == 0 ? 1 : -1)
+            this.setChannelVolumeLinear({
+                type: 'FX',
+                channel: 1,
+            }, newVolume)
 
-    setLevel(selector: ChannelSelector, levelLinear: number) {
-        return this.#client.setChannelVolumeLinear(selector, levelLinear)
-    }
-
-    mute(selector: ChannelSelector, status: boolean) {
-        return this.#client.setMute(selector, status)
+            // Set the volume back
+            this.setChannelVolumeLinear({
+                type: 'FX',
+                channel: 1,
+            }, volume)
+        }).then(() => this)
     }
 }
 
