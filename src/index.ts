@@ -1,6 +1,6 @@
 import StudioLiveAPI, { ChannelSelector, Channel, MessageCode } from 'presonus-studiolive-api'
 import type { ChannelTypes } from 'presonus-studiolive-api'
-export type { ChannelSelector } from 'presonus-studiolive-api'
+export * from 'presonus-studiolive-api'
 
 import LevelEvent from './types/LevelEvent'
 import MuteEvent from './types/MuteEvent'
