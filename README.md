@@ -11,12 +11,10 @@ A wrapper over the unofficial [PreSonus StudioLive API](https://featherbear.cc/p
 
 ## Usage
 
-* `new Client(HOST: string, PORT?: number)`
-* `<Client>.connect()`
+This wrapper attaches common events to the client. Refer to the [main project](https://featherbear.cc/presonus-studiolive-api) for other functionality
+
 * `<Client>.on('level', (data) => {...})`
 * `<Client>.on('mute', (data) => {...})`
-* `<Client>.setLevel(ChannelSelector, levelFrom0To100)`
-* `<Client>.mute(ChannelSelector, shouldMute)`
 
 ## Example
 
@@ -50,7 +48,7 @@ client.connect().then(() => {
     client.mute({
         type: 'LINE',
         channel: 17
-    }, true)
+    })
 })
 ```
 
