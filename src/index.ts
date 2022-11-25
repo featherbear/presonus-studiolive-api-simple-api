@@ -23,7 +23,7 @@ function settingsPathToChannelSelector(path: string | string[]): ChannelSelector
     channel = /(\d+)$/.exec(channel)[1]
 
     return {
-        type: type as ChannelTypes,
+        type: <ChannelTypes>type,
         channel: Number.parseInt(channel)
     }
 
@@ -34,8 +34,7 @@ type ExtendedEvents<T> = StudioLiveAPI['on'] & {
     (event, listener: CallbackWithData<any>): T;
 }
 
-
-export declare interface Client extends StudioLiveAPI {
+declare interface Client extends StudioLiveAPI {
     on: ExtendedEvents<this>
     addListener: ExtendedEvents<this>
     once: ExtendedEvents<this>
@@ -43,7 +42,7 @@ export declare interface Client extends StudioLiveAPI {
     removeListener: ExtendedEvents<this>
 }
 
-export class Client extends StudioLiveAPI {
+class Client extends StudioLiveAPI {
     #MS_last: {}
 
     constructor(...args: ConstructorParameters<typeof StudioLiveAPI>) {

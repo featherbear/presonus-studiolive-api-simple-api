@@ -179,9 +179,9 @@ pirates@^4.0.1:
   resolved "https://registry.yarnpkg.com/pirates/-/pirates-4.0.4.tgz#07df81e61028e402735cdd49db701e4885b4e6e6"
   integrity sha512-ZIrVPH+A52Dw84R0L3/VS9Op04PuQ2SEoJL6bkshmiTic/HldyW9Tf7oH5mhJZBK7NmDx27vSMrYEXPXclpDKw==
 
-presonus-studiolive-api@featherbear/presonus-studiolive-api#v1.4.2:
+presonus-studiolive-api@featherbear/presonus-studiolive-api#a9b220314aa83070da4312eb6c2caef37a2d0fe2:
   version "1.4.2"
-  resolved "https://codeload.github.com/featherbear/presonus-studiolive-api/tar.gz/8574fae08a7884065700a29b561630c8c3e13f43"
+  resolved "https://codeload.github.com/featherbear/presonus-studiolive-api/tar.gz/a9b220314aa83070da4312eb6c2caef37a2d0fe2"
   dependencies:
     "@types/node" "^14.14.6"
     bunyan "^1.8.15"
@@ -238,7 +238,7 @@ ts-interface-checker@^0.1.9:
   resolved "https://registry.yarnpkg.com/ts-interface-checker/-/ts-interface-checker-0.1.13.tgz#784fd3d679722bc103b1b4b8030bcddb5db2a699"
   integrity sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==
 
-typescript@^4.5.4, typescript@^4.5.5:
+typescript@^4.5.4:
   version "4.5.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.5.tgz#d8c953832d28924a9e3d37c73d729c846c5896f3"
   integrity sha512-TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==

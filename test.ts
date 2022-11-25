@@ -1,12 +1,12 @@
-import Client from './src/index'
+import Client from './src'
 
-let client = new Client("192.168.0.21")
+let client = new Client({ host: "192.168.0.29" })
 client.on('level', function (l) {
-    console.log(l);
+    console.log('level', l);
 })
 
 client.on('mute', function (m) {
-    console.log(m);
+    console.log('mute', m);
 })
 
 client.connect().then(c => {
