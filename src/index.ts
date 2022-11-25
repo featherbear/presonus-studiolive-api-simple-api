@@ -28,10 +28,19 @@ function settingsPathToChannelSelector(path: string | string[]): ChannelSelector
     }
 
 }
+type ExtendedEvents<T> = StudioLiveAPI['on'] & {
+    (event: 'level', listener: CallbackWithData<LevelEvent>): T;
+    (event: 'mute', listener: CallbackWithData<MuteEvent>): T;
+    (event, listener: CallbackWithData<any>): T;
+}
+
+
 export declare interface Client extends StudioLiveAPI {
-    on(event: 'level', listener: CallbackWithData<LevelEvent>): this;
-    on(event: 'mute', listener: CallbackWithData<MuteEvent>): this;
-    on(event, listener: CallbackWithData<any>): this;
+    on: ExtendedEvents<this>
+    addListener: ExtendedEvents<this>
+    once: ExtendedEvents<this>
+    off: ExtendedEvents<this>
+    removeListener: ExtendedEvents<this>
 }
 
 export class Client extends StudioLiveAPI {
