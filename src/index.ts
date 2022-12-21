@@ -4,6 +4,7 @@ export * from 'presonus-studiolive-api'
 
 import LevelEvent from './types/LevelEvent'
 import MuteEvent from './types/MuteEvent'
+import SoloEvent from './types/SoloEvent'
 
 type CallbackWithData<T> = (data: T) => any
 
@@ -31,6 +32,7 @@ function settingsPathToChannelSelector(path: string | string[]): ChannelSelector
 type ExtendedEvents<T> = StudioLiveAPI['on'] & {
     (event: 'level', listener: CallbackWithData<LevelEvent>): T;
     (event: 'mute', listener: CallbackWithData<MuteEvent>): T;
+    (event: 'solo', listener: CallbackWithData<SoloEvent>): T;
     (event, listener: CallbackWithData<any>): T;
 }
 
@@ -93,6 +95,18 @@ class Client extends StudioLiveAPI {
                         status: value,
                         type: 'mute'
                     } as MuteEvent)
+                    return;
+                }
+
+                case 'solo': {
+                    let selector = settingsPathToChannelSelector(name)
+                    if (!selector) return
+
+                    this.emit('solo', {
+                        channel: selector,
+                        status: value,
+                        type: 'solo'
+                    } as SoloEvent)
                     return;
                 }
             }
