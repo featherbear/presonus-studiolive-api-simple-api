@@ -10,7 +10,7 @@ type CallbackWithData<T> = (data: T) => any
 
 const channelLookup = Object.entries(Channel).reduce((obj, [key, val]) => ({ ...obj, [val]: key }), {})
 
-function settingsPathToChannelSelector(path: string | string[]): ChannelSelector {
+export function settingsPathToChannelSelector(path: string | string[]): ChannelSelector {
     if (!Array.isArray(path)) path = path.split("/")
 
     let [type, channel, ...rest] = path
