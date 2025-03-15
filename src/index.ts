@@ -132,16 +132,37 @@ class Client extends StudioLiveAPI {
                 let selector = settingsPathToChannelSelector(name)
                 if (!selector) return
 
-                let [_, type, channel] = /(\w+)(\d+)$/.exec(trailingToken)
-                selector.mixType = channelLookup[type]
-                selector.mixNumber = Number.parseInt(channel)
+				let propertyToken = /(\w+)(\d+)(?:_(\w+))?$/.exec(trailingToken);
 
-                this.emit('level', {
+				if (!propertyToken) {
+					console.log({
+						channel: selector,
+						value: value,
+						type: trailingToken,
+					});
+					this.emit("propertyChange", {
+						channel: selector,
+						value: value,
+						type: trailingToken,
+					});
+					return;
+				}
+
+				let [_, type, channel, property] = propertyToken;
+
+				selector.mixType = channelLookup[type];
+				selector.mixNumber = Number.parseInt(channel);
+
+				if (!property) {
+					property = "level";
+				}
+
+				this.emit(property, {
                     channel: selector,
-                    level: value,
-                    type: 'level'
-                } as LevelEvent)
-            }
+					level: value,
+					type: property,
+				} as LevelEvent);
+			}
 
             if (trailingToken.startsWith('FX')) {
                 if (name.includes('dca')) return
