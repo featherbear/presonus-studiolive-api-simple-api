@@ -345,9 +345,9 @@ pirates@^4.0.1:
   resolved "https://packages.atlassian.com/api/npm/npm-remote/pirates/-/pirates-4.0.6.tgz#3018ae32ecfcff6c29ba2267cbf21166ac1f36b9"
   integrity sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==
 
-presonus-studiolive-api@featherbear/presonus-studiolive-api#286a07c7e74076173639c9dd34b33ac773cb95b6:
-  version "1.4.2"
-  resolved "https://codeload.github.com/featherbear/presonus-studiolive-api/tar.gz/286a07c7e74076173639c9dd34b33ac773cb95b6"
+presonus-studiolive-api@featherbear/presonus-studiolive-api#v1.6.0:
+  version "1.6.0"
+  resolved "https://codeload.github.com/featherbear/presonus-studiolive-api/tar.gz/836c30abd4e9ace9ce11cfe150d74f92ccb198cc"
   dependencies:
     bunyan "^1.8.15"
     queue "^6.0.1"
